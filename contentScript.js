@@ -2,11 +2,8 @@ let markersShown = false;  // State to track whether markers are shown or hidden
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.command === "markVideo") {
-        if (markersShown) {
-            hideMarkers();
-        } else {
-            showMarkers(request.timestamps);
-        }
+        hideMarkers();
+        showMarkers(request.timestamps);
 
         // Toggle the state
         markersShown = !markersShown;
