@@ -5,6 +5,8 @@ from translate import translateVideo
 from word_search import *
 def generateTimestamps(url, phrase):
 
+    phrase = phrase.split(" ")
+
     #grab current path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = f'{dir_path}\\audios'

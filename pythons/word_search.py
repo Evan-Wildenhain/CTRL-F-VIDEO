@@ -8,9 +8,10 @@ def getTimestamps(phrase,file):
     searches = []
     times = []
 
+
     #find all extenstions of the word being searched (no phrases yet)
     for key, item in words.items():
-        if key.startswith(phrase):
+        if key.startswith(phrase[0]):
             searches.append(key)
     print(searches)
     
@@ -21,6 +22,8 @@ def getTimestamps(phrase,file):
         return times
     
     return [0]
+
+
 
 def createDictionary(file):
     f = open(file)
