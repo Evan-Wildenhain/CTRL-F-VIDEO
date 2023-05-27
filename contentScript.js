@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         showMarkers(request.timestamps);
 
         // Toggle the state
-        markersShown = !markersShown;
+        markersShown = true;
     } else if (request.command === "removeMarkers") {
         hideMarkers();
         markersShown = false;
