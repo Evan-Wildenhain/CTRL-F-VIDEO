@@ -12,7 +12,6 @@ def handle_data():
     data = request.get_json()  # get the data in JSON format
     if not regexp.search(data['url']):
         return {'status': 'error'}, 200
-    print(data)  # print the data to the console or do something with it
     timestamps = generateTimestamps(data['url'], data['text'])
     print(timestamps)
 

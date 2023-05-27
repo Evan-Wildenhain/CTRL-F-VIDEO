@@ -2,7 +2,8 @@ import yt_dlp
 import os
 import re
 from translate import translateVideo
-def generateTimestamps(url):
+from word_search import *
+def generateTimestamps(url, phrase):
 
     #grab current path
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -20,12 +21,17 @@ def generateTimestamps(url):
     # TODO: PUT LOGIC TO CHECK IF A JSON ALREADY EXISTS. IF IT DOES
     # THEN NO NEED TO GENERATE CUTS WE JUST RETURN THE VALUES IN THE JSON
     # BUT FOR NOT WE WILL DO EACH TIME
+    if os.path.exists(f'{path}\{url_id}.json'):
+        print("skipped")
+        timestamps = getTimestamps(phrase,f'{path}\{url_id}.json')
+        return timestamps
     
     downloadAudio(url,f'{path}\{url_id}')
     translateVideo(path,f'{path}\{url_id}',url_id)
-    
+    timestamps = getTimestamps(phrase,f'{path}\{url_id}.json')
 
-    return [1, 300]
+
+    return timestamps
 
 
 #Uses youtube-dlp to download audio to a temporary folder
