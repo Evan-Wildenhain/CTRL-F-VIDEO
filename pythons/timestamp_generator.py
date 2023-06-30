@@ -17,20 +17,26 @@ def generateTimestamps(url, phrase):
     #grabs all after the last occurance of a '=' 
     #guaranteed to exist due to the function not being called unless
     #youtube url with watch?v= exists
+    #if you accidentally have timestamped url.
+    url = url.split("&t=")[0]
     url_id = re.search(r'.*=(.*)$', url)
     url_id = url_id.group(1)
+    print(url_id)
 
     # TODO: PUT LOGIC TO CHECK IF A JSON ALREADY EXISTS. IF IT DOES
     # THEN NO NEED TO GENERATE CUTS WE JUST RETURN THE VALUES IN THE JSON
     # BUT FOR NOT WE WILL DO EACH TIME
-    if os.path.exists(f'{path}\{url_id}.json'):
-        print("skipped")
-        timestamps = getTimestamps(phrase,f'{path}\{url_id}.json')
-        return timestamps
-    
-    downloadAudio(url,f'{path}\{url_id}')
-    translateVideo(path,f'{path}\{url_id}',url_id)
-    timestamps = getTimestamps(phrase,f'{path}\{url_id}.json')
+    if not os.path.exists(f'{path}\{url_id}.json'):
+        downloadAudio(url,f'{path}\{url_id}')
+        translateVideo(path,f'{path}\{url_id}',url_id)
+    else:
+        #Put logic to check if model has been updated here later.
+        print("Already Downloaded")
+
+    if len(phrase) == 1:
+        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json')
+    else:
+        timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}.json')
 
 
     return timestamps

@@ -18,7 +18,6 @@ function processVideo(command) {
         }
 
         let url = tabs[0].url;  // Get the URL of the current tab
-        console.log("OOGA");
 
         // Send the URL to the server
         fetch('http://localhost:3000/', {
@@ -31,7 +30,11 @@ function processVideo(command) {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            chrome.tabs.sendMessage(tabs[0].id, {command: command, timestamps: data.timestamps});
+            chrome.tabs.sendMessage(tabs[0].id, 
+                {command: command,
+                     timestamps: data.timestamps,
+                      extended_timestamps: data.extended_timestamps,
+                       similar_timestamps: data.similar_timestamps});
         })
         .catch((error) => {
             console.error('Error:', error);

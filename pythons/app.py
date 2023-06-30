@@ -12,10 +12,12 @@ def handle_data():
     data = request.get_json()  # get the data in JSON format
     if not regexp.search(data['url']):
         return {'status': 'error'}, 200
-    timestamps = generateTimestamps(data['url'], data['text'])
+    timestamps, extended_timestamps, similar_timestamps = generateTimestamps(data['url'], data['text'])
     print(timestamps)
+    print(extended_timestamps)
+    print(similar_timestamps)
 
-    return {'status': 'success', 'timestamps': timestamps}, 200
+    return {'status': 'success', 'timestamps': timestamps, 'extended_timestamps': extended_timestamps, 'similar_timestamps': similar_timestamps}, 200
 
 if __name__ == '__main__':
     app.run(port=3000)  # run the server on port 3000
