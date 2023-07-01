@@ -31,13 +31,11 @@ function showMarkers(timestamps, color) {
     let progressBar = document.querySelector('.ytp-progress-bar');
 
     let videoDuration = videoElement.duration;
+    if (!Array.isArray(timestamps) || !timestamps.length) {
+        console.log("no times")
+        return
+    }
     timestamps.forEach(function(timestamp) {
-        if (timestamp === 0){
-            console.log("none found");
-            //error("No occurances found (not 100% accurate)")
-            return;
-        };
-
         let position = (timestamp / videoDuration)* 100;
         // Create the marker
         let marker = document.createElement('div');

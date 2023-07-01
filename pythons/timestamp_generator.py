@@ -1,8 +1,9 @@
 import yt_dlp
 import os
 import re
-from translate import translateVideo
+from translate import *
 from word_search import *
+
 def generateTimestamps(url, phrase):
 
     phrase = phrase.split(" ")
@@ -23,9 +24,6 @@ def generateTimestamps(url, phrase):
     url_id = url_id.group(1)
     print(url_id)
 
-    # TODO: PUT LOGIC TO CHECK IF A JSON ALREADY EXISTS. IF IT DOES
-    # THEN NO NEED TO GENERATE CUTS WE JUST RETURN THE VALUES IN THE JSON
-    # BUT FOR NOT WE WILL DO EACH TIME
     if not os.path.exists(f'{path}\{url_id}.json'):
         downloadAudio(url,f'{path}\{url_id}')
         translateVideo(path,f'{path}\{url_id}',url_id)
@@ -33,8 +31,13 @@ def generateTimestamps(url, phrase):
         #Put logic to check if model has been updated here later.
         print("Already Downloaded")
 
+    if not os.path.exists(f'{path}\{url_id}-g2p.pkl'):
+        createPhoneticDictionary(path,url_id)
+    else:
+        print("Already phenoticised")
+
     if len(phrase) == 1:
-        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json')
+        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl')
     else:
         timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}.json')
 
