@@ -5,8 +5,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         hideMarkers();
         showMarkers(request.timestamps, "#57DD73");
         showMarkers(request.extended_timestamps, "#1EEAFF");
-        showMarkers(request.identical_phoneme_timestamps, "#FF9600");
-        showMarkers(request.similar_phoneme_timestamps, "#D81EFF");
 
         // Toggle the state
         markersShown = true;
@@ -14,6 +12,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } else if (request.command === "removeMarkers") {
         hideMarkers();
         markersShown = false;
+    }
+    else if (request.command === "showSimilar") {
+        hideMarkers();
+        showMarkers(request.identical_phoneme_timestamps, "#FF9600");
+        showMarkers(request.similar_phoneme_timestamps, "#D81EFF");
+        console.log("here");
+        markersShown = true;
+    }
+    else if (request.command === "showAll") {
+        hideMarkers();
+        showMarkers(request.timestamps, "#57DD73");
+        showMarkers(request.extended_timestamps, "#1EEAFF");
+        showMarkers(request.identical_phoneme_timestamps, "#FF9600");
+        showMarkers(request.similar_phoneme_timestamps, "#D81EFF");
+        console.log("HERE");
+        markersShown = true;
     }
 });
 

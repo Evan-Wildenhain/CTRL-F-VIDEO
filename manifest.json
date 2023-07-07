@@ -1,17 +1,25 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "YouTube Marker",
     "version": "1.0",
     "description": "Mark a position in a YouTube video",
-    "browser_action": {
-        "default_icon": "icon.png",
+    "background":{
+        "service_worker":"background.js"
+    },
+    "action": {
         "default_popup": "popup.html"
     },
+    "icons":{
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+
     "permissions": ["activeTab", "tabs"],
     "content_scripts": [
         {
             "matches": ["*://*.youtube.com/*"],
-            "js": ["contentScript.js", "background.js"]
+            "js": ["contentScript.js"]
         }
     ]
 }
