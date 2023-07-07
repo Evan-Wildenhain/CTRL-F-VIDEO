@@ -5,7 +5,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         hideMarkers();
         showMarkers(request.timestamps, "#57DD73");
         showMarkers(request.extended_timestamps, "#1EEAFF");
-        showMarkers(request.similar_timestamps, "#FF9600");
+        showMarkers(request.phoneme_matches, "#FF9600");
+        showMarkers(request.similar_phonemes, "#D81EFF");
 
         // Toggle the state
         markersShown = true;

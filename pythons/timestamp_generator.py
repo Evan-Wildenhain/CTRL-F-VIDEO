@@ -34,7 +34,7 @@ def generateTimestamps(url, phrase):
     if not os.path.exists(f'{path}\{url_id}-g2p.pkl'):
         createPhoneticDictionary(path,url_id)
     else:
-        print("Already phenoticised")
+        print("Already phoneticised")
 
     if len(phrase) == 1:
         timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl')

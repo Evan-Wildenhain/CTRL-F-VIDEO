@@ -14,7 +14,6 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def translateVideo(path,audio_path,url_id):
     model = whisper.load_model("base", device=DEVICE)
     for filename in os.listdir(audio_path):
-        print(filename)
         audio = whisper.load_audio(f'{audio_path}\{filename}')
         result = whisper.transcribe(model,audio,language="en")
         with open(f'{path}\{url_id}.json', 'w', encoding='utf-8') as f:

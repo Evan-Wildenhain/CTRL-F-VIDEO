@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 regexp = re.compile(r'https://www.youtube.com/watch\?v=')
 
-def get_outdated_packages():
+def getOutdatedPackages():
     outdated_packages = []
     output = subprocess.check_output(["pip", "list", "--outdated", "--format", "json"])
     outdated_packages_list = json.loads(output)
@@ -19,7 +19,7 @@ def get_outdated_packages():
 
     return outdated_packages
 
-def update_package(package_name):
+def updatePackage(package_name):
     try:
         output = subprocess.check_output(["pip", "install", "--upgrade", package_name])
         print(f"Successfully updated {package_name}")
@@ -27,30 +27,34 @@ def update_package(package_name):
         print(f"Error occurred while trying to update {package_name}. Error: {str(ex)}")
 
 
-def update_packages():
+def updatePackages():
     with open('requirements.txt', 'r') as f:
         required_packages = f.read().splitlines()
 
-    outdated_packages = get_outdated_packages()
+    outdated_packages = getOutdatedPackages()
 
     for package in outdated_packages:
         if package in required_packages:
-            update_package(package)
+            updatePackage(package)
 
 
 @app.route('/', methods=['POST'])
 def handle_data():
-    data = request.get_json()  # get the data in JSON format
+    data = request.get_json()
     if not regexp.search(data['url']):
-        return {'status': 'error'}, 200
-    timestamps, extended_timestamps, similar_timestamps = generateTimestamps(data['url'], data['text'])
-    print(f'TIMES: {timestamps}')
-    print(f'EXTENDED TIMES: {extended_timestamps}')
-    print(f'SIMILAR TIMES: {similar_timestamps}')
+        return {'status': 'error', 'message': 'invalid URL format'}, 400
+    timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'])
+    #print(f'TIMES: {timestamps}')
+    #print(f'EXTENDED TIMES: {extended_timestamps}')
+    #print(f'SIMILAR TIMES: {similar_timestamps}')
 
-    return {'status': 'success', 'timestamps': timestamps, 'extended_timestamps': extended_timestamps, 'similar_timestamps': similar_timestamps}, 200
+    return {'status': 'success', 'timestamps': timestamps,
+             'extended_timestamps': extended_timestamps,
+                'phoneme_matches': phoneme_matches,
+                 'similar_phonemes': similar_phonemes}, 200
 
 if __name__ == '__main__':
     with app.app_context():
-        update_packages()
-    app.run(port=3000)  # run the server on port 3000
+        updatePackages()
+    #MAKE SURE TO CHANGE THIS BACK
+    app.run(port=3000, debug=True)

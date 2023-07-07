@@ -2,6 +2,7 @@ import json
 import re
 import pickle
 from g2p_en import G2p
+from similar_words import *
 
 
 def getPhraseTimestamps(phrase,file):
@@ -13,7 +14,7 @@ def getPhraseTimestamps(phrase,file):
     #all words exist in the dict
     for word in phrase:
         if word not in words:
-            return [[],[],[]]
+            return [[],[],[],[]]
         
    
 
@@ -28,7 +29,7 @@ def getPhraseTimestamps(phrase,file):
         previous = result
 
     times = [r[1] for r in result]
-    return [times,[],[]]
+    return [times,[],[],[]]
 
 def getSingleWordTimestamps(word,file, pkl_file):
     g2p = G2p()
@@ -36,39 +37,37 @@ def getSingleWordTimestamps(word,file, pkl_file):
     with open(pkl_file, 'rb') as f:
         phonetic_keys = pickle.load(f)
     words= createDictionary(file)
-    searches = set()
-    phonetic_match = set()
     exact_matches = []
     extended_matches = []
-    similar_matches = []
-
-
-    # optimize this later.
-    # or dont im lazy
-    for key, item in words.items():
-        if key.startswith(word[0]):
-            searches.add(key)
-
-    if phonetic_conversion in phonetic_keys:
-        for w in phonetic_keys[phonetic_conversion]:
-            phonetic_match.add(w)
-            searches.add(w)
+    phoneme_matches = []
+    similar_phonemes = []
     
-    print("SEARCHES", searches)
-    print("PHONETIC SEARCHES", phonetic_match)
+    identical_phonemes_search = findIdenticalPhonetics(word=word[0],phonetic_keys=phonetic_keys, words=words)
+    extended_words_search,exact_search  = findWordAndExtendedWords(word=word[0], words=words)
+    similar_search = findSimilarsoundingWords(word[0],r'model.pth',phonetic_keys,words)
+    all_searches = identical_phonemes_search | extended_words_search | exact_search | similar_search
 
-    while searches:
-        search = searches.pop()
-        print(search)
+    
+    print("EXACT SEARCHES", exact_search)
+    print("IDENTICAL PHONETICS", identical_phonemes_search)
+    print("EXTENDED SEARCH", extended_words_search)
+    print("SIMILAR WORDS", similar_search)
+    print("ALL", all_searches)
+
+    while all_searches:
+        search = all_searches.pop()
         for time in words[search]:
             if search == word[0]:
                 exact_matches.append(time[1])
-            elif search not in phonetic_match:
+            elif search in identical_phonemes_search:
+                phoneme_matches.append(time[1])
+            elif search in extended_words_search:
                 extended_matches.append(time[1])
-            else:
-                similar_matches.append(time[1])
+            elif search in similar_search:
+                similar_phonemes.append(time[1])
+
         
-    return [exact_matches,extended_matches,similar_matches]
+    return [exact_matches,extended_matches,phoneme_matches, similar_phonemes]
 
 
 

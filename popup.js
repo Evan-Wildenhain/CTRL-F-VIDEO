@@ -34,7 +34,8 @@ function processVideo(command) {
                 {command: command,
                      timestamps: data.timestamps,
                       extended_timestamps: data.extended_timestamps,
-                       similar_timestamps: data.similar_timestamps});
+                       identical_phoneme_timestamps: data.phoneme_matches,
+                        similar_phoneme_timestamps: data.similar_phonemes});
         })
         .catch((error) => {
             console.error('Error:', error);
