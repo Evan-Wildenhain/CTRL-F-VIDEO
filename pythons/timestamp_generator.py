@@ -3,8 +3,9 @@ import os
 import re
 from translate import *
 from word_search import *
+import time
 
-def generateTimestamps(url, phrase):
+def generateTimestamps(url, phrase, model):
 
     phrase = phrase.split(" ")
 
@@ -37,7 +38,9 @@ def generateTimestamps(url, phrase):
         print("Already phoneticised")
 
     if len(phrase) == 1:
-        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl')
+        start_time = time.time()
+        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl', model)
+        print("--- %s seconds for entire search ---" % (time.time() - start_time))
     else:
         timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}.json')
 
