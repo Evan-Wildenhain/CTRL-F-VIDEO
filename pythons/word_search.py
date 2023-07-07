@@ -44,13 +44,9 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
     phoneme_matches = []
     similar_phonemes = []
 
-    start_time = time.time()
     identical_phonemes_search = findIdenticalPhonetics(word=word[0],phonetic_keys=phonetic_keys, words=words, phonetic_conversion=phonetic_conversion)
-    print("--- %s seconds for identical phonetics ---" % (time.time() - start_time))
     extended_words_search,exact_search  = findWordAndExtendedWords(word=word[0], words=words)
-    start_time = time.time()
     similar_search = findSimilarsoundingWords(word[0],r'model.pth',phonetic_keys,words, phonetic_conversion, model)
-    print("--- %s seconds for model running ---" % (time.time() - start_time))
     all_searches = identical_phonemes_search | extended_words_search | exact_search | similar_search
 
     

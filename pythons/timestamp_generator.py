@@ -23,7 +23,6 @@ def generateTimestamps(url, phrase, model):
     url = url.split("&t=")[0]
     url_id = re.search(r'.*=(.*)$', url)
     url_id = url_id.group(1)
-    print(url_id)
 
     if not os.path.exists(f'{path}\{url_id}.json'):
         downloadAudio(url,f'{path}\{url_id}')
