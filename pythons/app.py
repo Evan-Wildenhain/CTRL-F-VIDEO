@@ -44,9 +44,6 @@ def handle_data():
     if not regexp.search(data['url']):
         return {'status': 'error', 'message': 'invalid URL format'}, 400
     timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'])
-    #print(f'TIMES: {timestamps}')
-    #print(f'EXTENDED TIMES: {extended_timestamps}')
-    #print(f'SIMILAR TIMES: {similar_timestamps}')
 
     return {'status': 'success', 'timestamps': timestamps,
              'extended_timestamps': extended_timestamps,
@@ -56,5 +53,4 @@ def handle_data():
 if __name__ == '__main__':
     with app.app_context():
         updatePackages()
-    #MAKE SURE TO CHANGE THIS BACK
-    app.run(port=3000, debug=True)
+    app.run(port=3000)
