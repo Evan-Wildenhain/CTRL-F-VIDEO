@@ -7,6 +7,17 @@ import time
 
 
 def getPhraseTimestamps(phrase,file):
+    """
+    Returns timestamps of a phrase from a dictionary created from the given json.
+
+    Args:
+        phrase (list): List of strings representing words to search.
+        file (str): File path to create the dictionary from.
+
+    Returns:
+        list: 4-element list with first element being list of timestamps, rest are empty lists.
+              If any word from phrase is not in the dictionary, returns all empty lists.
+    """
     words = createDictionary(file)
     searches = []
     times = []
@@ -33,6 +44,20 @@ def getPhraseTimestamps(phrase,file):
     return [times,[],[],[]]
 
 def getSingleWordTimestamps(word,file, pkl_file, model):
+    """
+    Returns timestamps of a single word from a dictionary created from a json,
+    including exact, extended, phoneme, and similar matches.
+
+    Args:
+        word (list): List containing a single string representing a word to search.
+        file (str): Json file path to create the dictionary from.
+        pkl_file (str): File path to a pickle file containing phonetic keys of current video.
+        model (model): A model to find similar sounding words.
+
+    Returns:
+        list: A list of four lists. Each list contains timestamps corresponding to:
+              [exact matches, extended matches, phoneme matches, similar phonemes]
+    """
     g2p = G2p()
     phonetic_conversion = tuple(g2p(word[0]))
     with open(pkl_file, 'rb') as f:
@@ -46,14 +71,11 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
 
     identical_phonemes_search = findIdenticalPhonetics(word=word[0],phonetic_keys=phonetic_keys, words=words, phonetic_conversion=phonetic_conversion)
     extended_words_search,exact_search  = findWordAndExtendedWords(word=word[0], words=words)
-    similar_search = findSimilarsoundingWords(word[0],r'model.pth',phonetic_keys,words, phonetic_conversion, model)
+    similar_search = findSimilarsoundingWords(phonetic_keys, phonetic_conversion, model)
+    #combine all sets (remove duplicates)
     all_searches = identical_phonemes_search | extended_words_search | exact_search | similar_search
 
-    
-    #print("EXACT SEARCHES", exact_search)
-    #print("IDENTICAL PHONETICS", identical_phonemes_search)
-    #print("EXTENDED SEARCH", extended_words_search)
-    #print("SIMILAR WORDS", similar_search)
+
     print("ALL", all_searches)
 
     while all_searches:
@@ -74,6 +96,16 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
 
 
 def createDictionary(file):
+    """
+    Reads a JSON file and creates a dictionary with words as keys and their timestamps as values.
+
+    Args:
+        file (str): File path to a JSON file containing segmented words and their timestamps.
+
+    Returns:
+        dict: A dictionary where each key is a word (after removing punctuation and converting to lower case) 
+              and the value is a list of tuples. Each tuple contains an ID and the timestamp of the word.
+    """
     f = open(file)
     json_data = json.load(f)
     segments = json_data["segments"]

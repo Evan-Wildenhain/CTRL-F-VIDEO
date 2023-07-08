@@ -12,6 +12,18 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #Translates video using base model, currently does not support
 #using multiGPU, but will create a branch that would allow for this down the road
 def translateVideo(path,audio_path,url_id):
+    """
+    Transcribes the audio of a YouTube video using a pre-loaded model.
+
+    Args:
+        path (str): Path where the transcription JSON file will be stored.
+        audio_path (str): Path of the audio file to transcribe.
+        url_id (str): YouTube video ID, used to name the output JSON file.
+
+    Returns:
+        None: The function operates by side effect, transcribing the audio 
+              and saving the transcription to a JSON file at the specified path.
+    """
     model = whisper.load_model("base", device=DEVICE)
     for filename in os.listdir(audio_path):
         audio = whisper.load_audio(f'{audio_path}\{filename}')
@@ -24,6 +36,17 @@ def translateVideo(path,audio_path,url_id):
 #I'd love to be able to do this at the same time of the translation
 #will look into it.
 def createPhoneticDictionary(path, url_id):
+    """
+    Creates a phonetic dictionary for the transcribed words of a YouTube video.
+
+    Args:
+        path (str): Path of the directory containing the transcription JSON file.
+        url_id (str): YouTube video ID, used to name the output pickle file.
+
+    Returns:
+        None: The function operates by side effect, creating a phonetic dictionary 
+              and saving it to a pickle file at the specified path.
+    """
     words = set()
     file = f'{path}\{url_id}.json'
     f = open(file)
