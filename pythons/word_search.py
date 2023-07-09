@@ -78,7 +78,7 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
     #combine all sets (remove duplicates)
     all_searches = identical_phonemes_search | extended_words_search | exact_search | similar_search
 
-    store_thread = threading.Thread(target=storeSimilar, args=(word[0],all_searches,g2p,phonetic_conversion))
+    store_thread = threading.Thread(target=storeSimilar, args=(word[0],identical_phonemes_search | similar_search ,g2p,phonetic_conversion))
     store_thread.start()
 
 
