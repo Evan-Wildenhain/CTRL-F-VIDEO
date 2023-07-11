@@ -10,9 +10,9 @@
         "default_popup": "popup.html"
     },
     "icons":{
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
+        "16": "funny_icon.png",
+        "48": "funny_icon.png",
+        "128": "funny_icon.png"
     },
 
     "permissions": ["activeTab", "tabs"],
