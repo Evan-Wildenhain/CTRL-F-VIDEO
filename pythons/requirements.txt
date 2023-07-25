@@ -3,3 +3,4 @@ yt-dlp
 g2p-en
 torch
 whisper-timestamped
+faster-whisper

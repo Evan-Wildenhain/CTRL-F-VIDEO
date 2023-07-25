@@ -21,7 +21,7 @@ def generateTimestamps(url, phrase, model):
               If the phrase consists of multiple words, returns timestamps where the 
               words appear in the same order as in the phrase.
     """
-
+    
     phrase = phrase.split(" ")
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -39,7 +39,9 @@ def generateTimestamps(url, phrase, model):
     url_id = url_id.group(1)
 
     if not os.path.exists(f'{path}\{url_id}.json'):
+        start_time = time.time()
         downloadAudio(url,f'{path}\{url_id}')
+        print("--- %s seconds for audio download ---" % (time.time() - start_time))
         translateVideo(path,f'{path}\{url_id}',url_id)
     else:
         #Put logic to check if model has been updated here later.
@@ -55,7 +57,9 @@ def generateTimestamps(url, phrase, model):
         timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl', model)
         print("--- %s seconds for entire search ---" % (time.time() - start_time))
     else:
+        start_time = time.time()
         timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}.json')
+        print("--- %s seconds for entire search ---" % (time.time() - start_time))
 
 
     return timestamps
@@ -79,7 +83,7 @@ def downloadAudio(url, path):
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
+            'preferredcodec': 'wav',
             'preferredquality': '192',
         }],
         'outtmpl': path + '/translate.%(ext)s',

@@ -82,6 +82,7 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
     store_thread.start()
 
 
+    print("EXACT", exact_search)
     print("ALL", all_searches)
 
     while all_searches:
@@ -121,7 +122,7 @@ def createDictionary(file):
     for segment in segments:
         for word in segment["words"]:
             #remove all the punctuation and stuff like that then lower all text.
-            text = re.sub(r'[^\w\s\d]+', '', word["text"])
+            text = re.sub(r'[^\w\d]+', '', word["text"])
             text = text.lower()
             if text not in timestamps:
                 timestamps[text] = []
