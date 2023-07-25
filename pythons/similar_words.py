@@ -98,8 +98,7 @@ def evaluateModelByBatches(model,phonemes,phoneme_list,phonetic_keys):
 
     similar_phonemes = []
     similar_words = set()
-    batch_size = 128
-
+    batch_size = 512
     word_encoded = oneHotEncode(phonemes, one_hot_dict)
     
     for length, words in words_by_length.items():

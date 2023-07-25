@@ -4,8 +4,9 @@ import re
 from translate import *
 from word_search import *
 import time
+from g2p_en import G2p
 
-def generateTimestamps(url, phrase, model):
+def generateTimestamps(url, phrase, model, g2p):
     """
     Generates timestamps for a given phrase in the audio of a YouTube video.
 
@@ -43,22 +44,23 @@ def generateTimestamps(url, phrase, model):
         downloadAudio(url,f'{path}\{url_id}')
         print("--- %s seconds for audio download ---" % (time.time() - start_time))
         translateVideo(path,f'{path}\{url_id}',url_id)
-    else:
-        #Put logic to check if model has been updated here later.
-        print("Already Downloaded")
 
     if not os.path.exists(f'{path}\{url_id}-g2p.pkl'):
+        print("Creating Phonemes")
         createPhoneticDictionary(path,url_id)
-    else:
-        print("Already phoneticised")
 
+    if not os.path.exists(f'{path}\{url_id}-dict.pkl'):
+        print("Creating Dictionary")
+        createDictionary(f'{path}\{url_id}.json',path, url_id)
+
+    
     if len(phrase) == 1:
         start_time = time.time()
-        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}.json', f'{path}\{url_id}-g2p.pkl', model)
+        timestamps = getSingleWordTimestamps(phrase,f'{path}\{url_id}-dict.pkl', f'{path}\{url_id}-g2p.pkl', model, g2p)
         print("--- %s seconds for entire search ---" % (time.time() - start_time))
     else:
         start_time = time.time()
-        timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}.json')
+        timestamps = getPhraseTimestamps(phrase,f'{path}\{url_id}-dict.pkl')
         print("--- %s seconds for entire search ---" % (time.time() - start_time))
 
 

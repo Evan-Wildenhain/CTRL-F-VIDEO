@@ -6,6 +6,7 @@ import subprocess
 import json
 from model import *
 import torch
+from g2p_en import G2p
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -14,6 +15,7 @@ CORS(app)
 regexp = re.compile(r'https://www.youtube.com/watch\?v=')
 model = torch.load('model.pth')
 model = model.to(DEVICE)
+g2p = G2p()
 
 def getOutdatedPackages():
     outdated_packages = []
@@ -49,7 +51,7 @@ def handle_data():
     data = request.get_json()
     if not regexp.search(data['url']):
         return {'status': 'error', 'message': 'invalid URL format'}, 400
-    timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'], model)
+    timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'], model, g2p)
 
     return {'status': 'success', 'timestamps': timestamps,
              'extended_timestamps': extended_timestamps,

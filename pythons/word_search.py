@@ -20,10 +20,12 @@ def getPhraseTimestamps(phrase,file):
         list: 4-element list with first element being list of timestamps, rest are empty lists.
               If any word from phrase is not in the dictionary, returns all empty lists.
     """
-    words = createDictionary(file)
+    #words = createDictionary(file)
+    with open(file, 'rb') as f:
+        words = pickle.load(f)
+
     searches = []
     times = []
-    print(phrase)
 
     #all words exist in the dict
     for word in phrase:
@@ -42,10 +44,13 @@ def getPhraseTimestamps(phrase,file):
         result = [(id1+1, time1) for id1,time1 in previous if id1 in curr_dict]
         previous = result
 
+
     times = [r[1] for r in result]
+    if times:
+        print(phrase)
     return [times,[],[],[]]
 
-def getSingleWordTimestamps(word,file, pkl_file, model):
+def getSingleWordTimestamps(word,file, pkl_file, model, g2p):
     """
     Returns timestamps of a single word from a dictionary created from a json,
     including exact, extended, phoneme, and similar matches.
@@ -60,12 +65,13 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
         list: A list of four lists. Each list contains timestamps corresponding to:
               [exact matches, extended matches, phoneme matches, similar phonemes]
     """
-    g2p = G2p()
     phonetic_conversion = tuple(g2p(word[0]))
     with open(pkl_file, 'rb') as f:
         phonetic_keys = pickle.load(f)
+    with open(file, 'rb') as f:
+        words = pickle.load(f)
     
-    words= createDictionary(file)
+    #words= createDictionary(file)
     exact_matches = []
     extended_matches = []
     phoneme_matches = []
@@ -82,9 +88,8 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
     store_thread.start()
 
 
-    print("EXACT", exact_search)
     print("ALL", all_searches)
-
+    
     while all_searches:
         search = all_searches.pop()
         for t in words[search]:
@@ -102,16 +107,17 @@ def getSingleWordTimestamps(word,file, pkl_file, model):
 
 
 
-def createDictionary(file):
+def createDictionary(file, path, url_id):
     """
     Reads a JSON file and creates a dictionary with words as keys and their timestamps as values.
 
     Args:
         file (str): File path to a JSON file containing segmented words and their timestamps.
+        path (str): Path of the directory containing the transcription JSON file.
+        url_id (str): YouTube video ID, used to name the output pickle file.
 
     Returns:
-        dict: A dictionary where each key is a word (after removing punctuation and converting to lower case) 
-              and the value is a list of tuples. Each tuple contains an ID and the timestamp of the word.
+        None: Stores the dictionary in a pkl file.
     """
     f = open(file)
     json_data = json.load(f)
@@ -128,4 +134,7 @@ def createDictionary(file):
                 timestamps[text] = []
             timestamps[text].append((val,word["start"]))
             val += 1
-    return timestamps
+    
+    with open(f'{path}\{url_id}-dict.pkl', 'wb') as fp:
+        pickle.dump(timestamps, fp)
+    return
