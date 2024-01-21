@@ -3,6 +3,8 @@ import csv
 from g2p_en import G2p
 import pandas as pd
 import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def storeSimilar(word, words, g2p, phoneme):
     """

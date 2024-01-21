@@ -8,6 +8,9 @@ from model import *
 import torch
 from g2p_en import G2p
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+from faster_whisper import WhisperModel
+model_size = "medium"
+model_whisper = WhisperModel(model_size, device="cuda", compute_type="float16")
 
 
 app = Flask(__name__)
@@ -29,8 +32,10 @@ def getOutdatedPackages():
 
 def updatePackage(package_name):
     try:
-        output = subprocess.check_output(["pip", "install", "--upgrade", package_name])
+        output = subprocess.check_output(["conda", "install", "--upgrade", package_name], timeout=60)  # 60 seconds timeout
         print(f"Successfully updated {package_name}")
+    except subprocess.TimeoutExpired:
+        print(f"Timed out while trying to update {package_name}.")
     except Exception as ex:
         print(f"Error occurred while trying to update {package_name}. Error: {str(ex)}")
 
@@ -51,7 +56,7 @@ def handle_data():
     data = request.get_json()
     if not regexp.search(data['url']):
         return {'status': 'error', 'message': 'invalid URL format'}, 400
-    timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'], model, g2p)
+    timestamps, extended_timestamps, phoneme_matches, similar_phonemes = generateTimestamps(data['url'], data['text'], model, g2p, model_whisper)
 
     return {'status': 'success', 'timestamps': timestamps,
              'extended_timestamps': extended_timestamps,

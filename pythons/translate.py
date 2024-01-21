@@ -10,7 +10,7 @@ import shutil
 import time
 import pickle
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_size = "base"
+model_size = "medium"
 
 
 #All this JSON logic is done due to the fact that switching over from Whisper
@@ -35,26 +35,27 @@ def listToSegment(segment_list):
 
 #Translates video using base model, currently does not support
 #using multiGPU, but will create a branch that would allow for this down the road
-def translateVideo(path,audio_path,url_id):
+def translateVideo(path,audio_path,url_id, model):
     """
-    Transcribes the audio of a YouTube video using a pre-loaded model.
+    Transcribes the audio of a video using a pre-loaded model.
 
     Args:
         path (str): Path where the transcription JSON file will be stored.
         audio_path (str): Path of the audio file to transcribe.
-        url_id (str): YouTube video ID, used to name the output JSON file.
+        url_id (str): video ID, used to name the output JSON file.
+        model (model): Whisper model
 
     Returns:
         None: The function operates by side effect, transcribing the audio 
               and saving the transcription to a JSON file at the specified path.
     """
 
-    model = WhisperModel(model_size, device="cuda", compute_type="float16")
+    #model = WhisperModel(model_size, device="cuda", compute_type="float16")
     for filename in os.listdir(audio_path):
         print("model running")
         start_time = time.time()
         #Current bug exists in whisper need to keep temp 0 or else program crashes from windows system
-        segments, info = model.transcribe(f'{audio_path}\{filename}', beam_size=5, word_timestamps=True, temperature =0)
+        segments, info = model.transcribe(f'{audio_path}\{filename}', word_timestamps=True, temperature=(0.0,0.2,0.4,0.6,0.8,1.0))
     segments = listToSegment(list(segments))
     json_dict = {
         "text": "Placeholder.",

@@ -6,7 +6,9 @@ from word_search import *
 import time
 from g2p_en import G2p
 
-def generateTimestamps(url, phrase, model, g2p):
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
+def generateTimestamps(url, phrase, model, g2p, whisper_model):
     """
     Generates timestamps for a given phrase in the audio of a YouTube video.
 
@@ -14,6 +16,7 @@ def generateTimestamps(url, phrase, model, g2p):
         url (str): URL of a YouTube video.
         phrase (str): A space-separated string representing a phrase to search for.
         model (model): A model used to find similar sounding words.
+        whisper_model (model) :Whisper model
 
     Returns:
         list: A list of timestamps where the phrase appears in the audio.
@@ -43,7 +46,7 @@ def generateTimestamps(url, phrase, model, g2p):
         start_time = time.time()
         downloadAudio(url,f'{path}\{url_id}')
         print("--- %s seconds for audio download ---" % (time.time() - start_time))
-        translateVideo(path,f'{path}\{url_id}',url_id)
+        translateVideo(path,f'{path}\{url_id}',url_id, whisper_model)
 
     if not os.path.exists(f'{path}\{url_id}-g2p.pkl'):
         print("Creating Phonemes")
@@ -92,10 +95,3 @@ def downloadAudio(url, path):
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
-
-#Cuts the video into 30 second chunks if length > 30, with a
-#sliding window value of 5 seconds
-#this will only be used if we have multiple GPUs
-#TODO: implement later since I don't have mGPUs at the moment.
-def slidingWindowCuts(path):
-    return
