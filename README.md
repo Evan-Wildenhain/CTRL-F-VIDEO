@@ -10,6 +10,9 @@
 * Show all - show both green and purple
 * Remove stamps - sometimes it carries over to other youtube pages and just sits on the timebar (only visible when timebar is up), but this is just for those when you want to wipe the colored stamps.
 
+![image](https://github.com/Evan-Wildenhain/CTRL-F-VIDEO/assets/66094938/2dff081b-59a3-49df-8fbb-e3b132da0992)
+
+
 
 ### About CTRL-F
 * The purpose is to create an easy way to search videos for specific words/phrases
