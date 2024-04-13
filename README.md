@@ -22,3 +22,6 @@
 
 ### Efficiency
 * RTX 3090 can do a 5 minute video in approximately 16 seconds
+
+
+Feel free to take the project make it your own, this was just a small side project for me.
