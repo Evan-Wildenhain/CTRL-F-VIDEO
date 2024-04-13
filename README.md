@@ -1,6 +1,9 @@
 # CTRL-F for videos
 **An audio to text word search**
 
+### How to run
+"python app.py" while in the pythons folder.
+
 ### About CTRL-F
 * The purpose is to create an easy way to search videos for specific words/phrases
 * Before whisper a lot of massaging and similarity searching was required to bring accuracy up, and while implemented they are rarely utilized due to the effectiveness of whisper
