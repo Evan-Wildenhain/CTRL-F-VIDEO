@@ -8,9 +8,14 @@ from model import *
 import torch
 from g2p_en import G2p
 from faster_whisper import WhisperModel
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.backends.mps.is_available():
+    DEVICE = torch.device("mps")
+elif torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+else:
+    DEVICE = torch.device("cpu")
 model_size = "medium"
-model_whisper = WhisperModel(model_size, device="cuda", compute_type="float16")
+model_whisper = WhisperModel(model_size, device=str(DEVICE), compute_type="float16")
 
 
 app = Flask(__name__)
